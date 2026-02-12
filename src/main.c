@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <locale.h>
 #include <ncurses.h>
 #include "tetromino.h"
 #include "game.h"
@@ -154,6 +155,7 @@ static void timing_init(TimingState *timing) {
  */
 int main(void) {
     /* Seed random number generator */
+    setlocale(LC_ALL, "");
     srand((unsigned int)time(NULL));
 
     /* Initialize subsystems */
