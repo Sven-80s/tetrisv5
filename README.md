@@ -7,8 +7,21 @@ Ein klassisches Tetris-Spiel für das Linux-Terminal, implementiert in C11 mit n
 **WP-001: Tetromino-Modul** ✅ Abgeschlossen  
 **WP-002: Game Engine** ✅ Abgeschlossen  
 **WP-003: UI-Layer** ✅ Abgeschlossen  
-- Input-Modul ✅
-- Renderer-Modul ✅
+**WP-004: Integration** ✅ Abgeschlossen
+
+🎮 **Das Spiel ist fertig!**
+
+## Schnellstart
+
+```bash
+# Repository klonen
+git clone git@github.com:Sven-80s/tetrisv5.git
+cd tetrisv5
+
+# Kompilieren und starten
+make
+./tetris
+```
 
 ## Build
 
@@ -28,7 +41,9 @@ sudo pacman -S base-devel ncurses
 ### Kompilieren
 
 ```bash
-make
+make          # Erstellt das 'tetris' Binary
+make run      # Kompiliert und startet sofort
+make debug    # Debug-Build mit Symbolen
 ```
 
 ### Tests ausführen
@@ -58,6 +73,46 @@ make test_renderer    # Nur Renderer-Modul-Tests
 | P / p | Pause |
 | Q / q | Spiel beenden |
 
+### Spielablauf
+
+1. Steuere die fallenden Tetrominos mit den Pfeiltasten
+2. Vervollständige horizontale Linien, um Punkte zu erhalten
+3. Je mehr Linien auf einmal gelöscht werden, desto mehr Punkte
+4. Das Level erhöht sich alle 10 Linien - das Spiel wird schneller!
+5. Game Over, wenn die Steine den oberen Rand erreichen
+
+## Spielfeld-Ansicht
+
+```
+╔══════════════════╗  ┌──────────────┐
+║                  ║  │   NEXT       │
+║                  ║  │   ┌────┐     │
+║                  ║  │   │██  │     │
+║                  ║  │   │██  │     │
+║                  ║  │   │██  │     │
+║                  ║  │   │██  │     │
+║                  ║  │   └────┘     │
+║                  ║  │              │
+║                  ║  │  SCORE       │
+║                  ║  │  0001250     │
+║                  ║  │              │
+║                  ║  │  LEVEL       │
+║                  ║  │  02          │
+║                  ║  │              │
+║                  ║  │  LINES       │
+║                  ║  │  00015       │
+║                  ║  │              │
+║                  ║  │  CONTROLS    │
+║                  ║  │  ←→ Move     │
+║                  ║  │  ↓ Soft Drop │
+║                  ║  │  ↑ Rotate    │
+║                  ║  │  Space Hard  │
+║                  ║  │  Z CCW Rot   │
+╚══════════════════╝  │  P Pause     │
+                      │  Q Quit      │
+                      └──────────────┘
+```
+
 ## Architektur
 
 ### Module
@@ -68,7 +123,7 @@ make test_renderer    # Nur Renderer-Modul-Tests
 | `game` | ✅ | Spiellogik, Board, Scoring, Level-System |
 | `input` | ✅ | Tastatureingabe mit ncurses |
 | `renderer` | ✅ | ncurses-Ausgabe, Farben, UI |
-| `main` | ⏳ | Hauptprogramm, Game-Loop |
+| `main` | ✅ | Hauptprogramm, Game-Loop |
 
 ### Tetromino-Modul API
 
@@ -209,7 +264,15 @@ Fallgeschwindigkeit: `max(100, 1000 - (level-1) * 100)` ms
 - [x] WP-001: Tetromino-Modul
 - [x] WP-002: Game Engine
 - [x] WP-003: UI-Layer (Input & Renderer)
-- [ ] WP-004: Integration
+- [x] WP-004: Integration & Main Entry
+
+## Qualitätsmerkmale
+
+- ✅ 99+ Unit-Tests (alle Module)
+- ✅ Keine Memory Leaks (getestet mit Valgrind)
+- ✅ Keine Compiler-Warnungen
+- ✅ C11 Standard
+- ✅ Vollständige Doxygen-Kommentare
 
 ## Coding Standards
 
@@ -218,3 +281,7 @@ Fallgeschwindigkeit: `max(100, 1000 - (level-1) * 100)` ms
 - Naming: `snake_case` für Funktionen/Variablen, `UPPER_CASE` für Konstanten
 - JSDoc-Kommentare in Header-Dateien
 - Unit-Tests für jedes Modul (mindestens 20 Tests pro Modul)
+
+## Lizenz
+
+MIT License - Siehe LICENSE-Datei

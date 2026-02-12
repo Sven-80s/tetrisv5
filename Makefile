@@ -1,5 +1,5 @@
 # Tetris CLI Makefile
-# Supports: all, clean, test
+# Supports: all, clean, test, run
 
 # Compiler settings
 CC = gcc
@@ -8,7 +8,7 @@ CFLAGS_DEBUG = -g -O0
 CFLAGS_RELEASE = -O2
 
 # Linker flags
-LDFLAGS = -lncurses
+LDFLAGS = -lncurses -lrt
 
 # Directories
 SRCDIR = src
@@ -25,9 +25,9 @@ TEST_SRCS = $(wildcard $(TESTDIR)/test_*.c)
 TEST_BINS = $(patsubst $(TESTDIR)/%.c,%,$(TEST_SRCS))
 
 # Targets
-.PHONY: all clean test debug
+.PHONY: all clean test run debug
 
-# Default target: build all executables
+# Default target: build main executable
 all: tetris
 
 # Create build directories
@@ -41,10 +41,13 @@ $(TESTBUILDDIR):
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c | $(BUILDDIR)
 	$(CC) $(CFLAGS) $(CFLAGS_RELEASE) -c $< -o $@
 
-# Main executable (placeholder - will be built in WP-004)
+# Main executable - links all object files
 tetris: $(OBJS)
-	@echo "Main executable will be built in WP-004 (Integration)"
-	@echo "Current objects: $(OBJS)"
+	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+
+# Run the game
+run: tetris
+	./tetris
 
 # Debug build
 debug: CFLAGS_RELEASE = $(CFLAGS_DEBUG)
@@ -61,6 +64,8 @@ test: test_tetromino test_game test_input test_renderer
 	@./test_game
 	@./test_input
 	@./test_renderer
+	@echo ""
+	@echo "All tests passed!"
 
 # Tetromino tests
 test_tetromino: $(TESTBUILDDIR)/test_tetromino.o $(BUILDDIR)/tetromino.o | $(TESTBUILDDIR)
@@ -94,7 +99,8 @@ $(TESTBUILDDIR)/test_renderer.o: $(TESTDIR)/test_renderer.c | $(TESTBUILDDIR)
 # Print available targets
 help:
 	@echo "Available targets:"
-	@echo "  all          - Build all source files"
+	@echo "  all          - Build main tetris executable"
+	@echo "  run          - Build and run the game"
 	@echo "  test         - Run all unit tests"
 	@echo "  test_tetromino - Run tetromino tests only"
 	@echo "  test_game    - Run game engine tests only"
