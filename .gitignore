@@ -1,0 +1,27 @@
+# Build artifacts
+build/
+*.o
+*.a
+*.so
+
+# Executables
+tetris
+tetris_test
+test_tetromino
+test_game
+
+# Debug files
+*.dSYM/
+*.gcno
+*.gcda
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
