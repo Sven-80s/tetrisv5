@@ -52,11 +52,17 @@ clean:
 	rm -rf $(BUILDDIR)
 	rm -f tetris test_tetromino test_game
 
-# Run tests
-test: test_tetromino
+# Run all tests
+test: test_tetromino test_game
 	@./test_tetromino
+	@./test_game
 
+# Tetromino tests
 test_tetromino: $(TESTBUILDDIR)/test_tetromino.o $(BUILDDIR)/tetromino.o | $(TESTBUILDDIR)
+	$(CC) $^ -o $@
+
+# Game engine tests
+test_game: $(TESTBUILDDIR)/test_game.o $(BUILDDIR)/game.o $(BUILDDIR)/tetromino.o | $(TESTBUILDDIR)
 	$(CC) $^ -o $@
 
 # Compile test files
@@ -69,8 +75,10 @@ $(TESTBUILDDIR)/test_game.o: $(TESTDIR)/test_game.c | $(TESTBUILDDIR)
 # Print available targets
 help:
 	@echo "Available targets:"
-	@echo "  all      - Build all source files (objects only for WP-001)"
-	@echo "  test     - Run tetromino tests"
-	@echo "  debug    - Build with debug symbols"
-	@echo "  clean    - Remove build artifacts"
-	@echo "  help     - Show this help"
+	@echo "  all          - Build all source files"
+	@echo "  test         - Run all unit tests"
+	@echo "  test_tetromino - Run tetromino tests only"
+	@echo "  test_game    - Run game engine tests only"
+	@echo "  debug        - Build with debug symbols"
+	@echo "  clean        - Remove build artifacts"
+	@echo "  help         - Show this help"
