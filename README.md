@@ -5,7 +5,10 @@ Ein klassisches Tetris-Spiel für das Linux-Terminal, implementiert in C11 mit n
 ## Status
 
 **WP-001: Tetromino-Modul** ✅ Abgeschlossen  
-**WP-002: Game Engine** ✅ Abgeschlossen
+**WP-002: Game Engine** ✅ Abgeschlossen  
+**WP-003: UI-Layer** ✅ Abgeschlossen  
+- Input-Modul ✅
+- Renderer-Modul ✅
 
 ## Build
 
@@ -36,9 +39,24 @@ make test
 
 Für einzelne Test-Suiten:
 ```bash
-make test_tetromino  # Nur Tetromino-Tests
-make test_game       # Nur Game Engine-Tests
+make test_tetromino   # Nur Tetromino-Tests
+make test_game        # Nur Game Engine-Tests
+make test_input       # Nur Input-Modul-Tests
+make test_renderer    # Nur Renderer-Modul-Tests
 ```
+
+## Bedienung
+
+| Taste | Aktion |
+|-------|--------|
+| ← (Pfeil links) | Nach links bewegen |
+| → (Pfeil rechts) | Nach rechts bewegen |
+| ↓ (Pfeil runter) | Schneller fallen (Soft Drop) |
+| ↑ (Pfeil hoch) | Im Uhrzeigersinn rotieren |
+| Leertaste | Sofort fallen (Hard Drop) |
+| Z / z | Gegen Uhrzeigersinn rotieren |
+| P / p | Pause |
+| Q / q | Spiel beenden |
 
 ## Architektur
 
@@ -48,8 +66,8 @@ make test_game       # Nur Game Engine-Tests
 |-------|--------|--------------|
 | `tetromino` | ✅ | Tetromino-Definitionen, Rotation, Farben |
 | `game` | ✅ | Spiellogik, Board, Scoring, Level-System |
-| `input` | ⏳ | Tastatureingabe |
-| `renderer` | ⏳ | ncurses-Ausgabe |
+| `input` | ✅ | Tastatureingabe mit ncurses |
+| `renderer` | ✅ | ncurses-Ausgabe, Farben, UI |
 | `main` | ⏳ | Hauptprogramm, Game-Loop |
 
 ### Tetromino-Modul API
@@ -108,6 +126,57 @@ if (game_check_game_over(&game)) {
 TetrominoType next = game_get_next_type(&game);
 ```
 
+### Input-Modul API
+
+```c
+#include "src/input.h"
+
+// Initialisieren (ncurses muss initialisiert sein)
+input_init();
+
+// Input verarbeiten
+InputAction action = input_get_action();
+switch (action) {
+    case INPUT_LEFT:    /* Nach links */ break;
+    case INPUT_RIGHT:   /* Nach rechts */ break;
+    case INPUT_DOWN:    /* Runter */ break;
+    case INPUT_ROTATE_CW:  /* Rotieren */ break;
+    case INPUT_HARD_DROP:  /* Hard Drop */ break;
+    case INPUT_PAUSE:      /* Pause */ break;
+    case INPUT_QUIT:       /* Beenden */ break;
+    case INPUT_NONE:       /* Keine Eingabe */ break;
+}
+
+// Cleanup
+input_cleanup();
+```
+
+### Renderer-Modul API
+
+```c
+#include "src/renderer.h"
+
+// Initialisieren
+renderer_init();
+
+// Komplettes Spiel zeichnen
+renderer_draw_game(&game);
+
+// Einzelne Komponenten
+renderer_draw_board(&game.board, &game.current);
+renderer_draw_sidebar(&game);
+renderer_draw_next_piece(game.next.type);
+renderer_draw_score(game.score, game.level, game.lines);
+renderer_draw_controls();
+
+// Overlays
+renderer_draw_pause();
+renderer_draw_game_over(game.score);
+
+// Cleanup
+renderer_cleanup();
+```
+
 ### GameState Struktur
 
 ```c
@@ -139,7 +208,7 @@ Fallgeschwindigkeit: `max(100, 1000 - (level-1) * 100)` ms
 
 - [x] WP-001: Tetromino-Modul
 - [x] WP-002: Game Engine
-- [ ] WP-003: UI-Layer (Input & Renderer)
+- [x] WP-003: UI-Layer (Input & Renderer)
 - [ ] WP-004: Integration
 
 ## Coding Standards
