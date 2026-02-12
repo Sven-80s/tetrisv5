@@ -56,8 +56,9 @@ clean:
 	rm -f tetris test_tetromino test_game test_input test_renderer
 
 # Run all tests
-test: test_tetromino test_game test_input test_renderer
+test: test_tetromino test_game test_input test_renderer test_integration
 	@./test_tetromino
+	@./test_integration
 	@./test_game
 	@./test_input
 	@./test_renderer
@@ -103,3 +104,11 @@ help:
 	@echo "  debug        - Build with debug symbols"
 	@echo "  clean        - Remove build artifacts"
 	@echo "  help         - Show this help"
+
+# Integration tests
+test_integration: $(TESTBUILDDIR)/test_integration.o $(BUILDDIR)/game.o $(BUILDDIR)/tetromino.o | $(TESTBUILDDIR)
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+$(TESTBUILDDIR)/test_integration.o: $(TESTDIR)/test_integration.c | $(TESTBUILDDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
